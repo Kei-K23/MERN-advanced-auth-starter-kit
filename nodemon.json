@@ -1,0 +1,12 @@
+{
+    "watch": [
+        "backend",
+        ".env"
+    ],
+    "ext": "js,json,env",
+    "ignore": [
+        "dist",
+        "node_modules"
+    ],
+    "exec": "NODE_ENV=development node backend/server.js"
+}
