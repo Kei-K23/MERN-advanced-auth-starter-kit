@@ -1,0 +1,9 @@
+dist
+.github
+coverage
+node_modules/
+.idea
+
+README.md
+package-lock.json
+*.DS_Store
