@@ -10,7 +10,6 @@ export default class AuthController {
 
       const newUser = await AuthService.signUp(name, email, password);
 
-      // Send verification code
       res.status(201).json(newUser);
     } catch (error) {
       next(error);

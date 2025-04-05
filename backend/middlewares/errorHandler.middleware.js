@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import ApiError from '../exceptions/ApiError.js';
 
 export const errorHandler = (error, _req, res, _next) => {
@@ -13,6 +14,11 @@ export const errorHandler = (error, _req, res, _next) => {
   else if (error.code === 11000) {
     statusCode = 400;
     message = `Duplicate field value entered: ${error.keyValue}`;
+  }
+  // Handle Mongoose duplicate key errors
+  else if (error instanceof mongoose.Error) {
+    statusCode = 500;
+    message = error.message;
   }
 
   res.status(statusCode).json({

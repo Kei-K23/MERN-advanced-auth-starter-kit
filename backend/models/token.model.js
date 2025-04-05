@@ -1,11 +1,11 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const schema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "User",
+      ref: 'User',
     },
     token: {
       type: String,
@@ -13,12 +13,16 @@ const schema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["FORGOT_PASSWORD", "VERIFY_EMAIL"],
+      enum: ['FORGOT_PASSWORD', 'VERIFY_EMAIL'],
+      required: true,
+    },
+    expireIn: {
+      type: Date,
       required: true,
     },
   },
-  { timestamps: true, collation: "tokens" }
+  { timestamps: true, collation: 'tokens' },
 );
 
-const Token = mongoose.model("Token", schema);
+const Token = mongoose.model('Token', schema);
 export default Token;
