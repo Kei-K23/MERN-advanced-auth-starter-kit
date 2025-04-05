@@ -1,3 +1,3 @@
-# Advanced MERN Auth Stack
+# Advanced MERN Authentication System Starter Kit 🔐
 
-Advanced MERN Auth Stack: Email Verification, Password Recovery, User Activities, and Account Management, etc.
+Advanced MERN Authentication System Starter Kit: Email Verification, Password Recovery, User Activities, and Account Management, etc.
