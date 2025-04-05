@@ -1,6 +1,7 @@
 import { sendEmail } from '../config/email.js';
 import { VERIFICATION_EMAIL_TEMPLATE } from '../config/emailTemplates.js';
 import BadRequestError from '../exceptions/BadRequestError.js';
+import NotFoundError from '../exceptions/NotFoundError.js';
 import Token from '../models/token.model.js';
 import User from '../models/user.model.js';
 import { generateRandomNumbers } from '../utils.js';
@@ -42,5 +43,32 @@ export default class AuthService {
       },
     ]);
     return newUser;
+  };
+
+  static verifyEmail = async (email, verificationCode) => {
+    const existingUser = await User.findOne({ email, isVerified: false });
+
+    if (!existingUser) {
+      throw new NotFoundError('User not found or user already verified');
+    }
+
+    // Get the token and check token is valid
+    const tokenDoc = await Token.findOne({
+      userId: existingUser._id,
+      token: verificationCode,
+      expireIn: {
+        $gt: Date.now(),
+      },
+    });
+
+    if (!tokenDoc) {
+      throw new BadRequestError('Token is expired or invalid');
+    }
+
+    existingUser.isVerified = true;
+    // Update user isVerified status
+    await existingUser.save();
+    // Delete the token for clean-up
+    await tokenDoc.deleteOne();
   };
 }

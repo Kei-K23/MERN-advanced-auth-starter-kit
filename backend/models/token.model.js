@@ -21,7 +21,7 @@ const schema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true, collation: 'tokens' },
+  { timestamps: true, collection: 'tokens' },
 );
 
 const Token = mongoose.model('Token', schema);

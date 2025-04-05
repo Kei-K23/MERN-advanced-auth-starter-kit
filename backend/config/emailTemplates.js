@@ -1,40 +1,84 @@
 export const VERIFICATION_EMAIL_TEMPLATE = `
 <!-- email-verify.html -->
+<!-- email-verify.html -->
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
   <title>Verify Your Email</title>
   <style>
-    body { font-family: 'Helvetica Neue', sans-serif; margin: 0; padding: 0; background: #f4f4f7; }
-    .container { max-width: 600px; margin: 30px auto; background: #fff; padding: 20px; border-radius: 8px; }
-    h1 { font-size: 24px; color: #333; }
-    p { color: #555; font-size: 16px; }
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f7;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #333;
+    }
+
+    p {
+      color: #555;
+      font-size: 16px;
+    }
+
     .btn {
       display: inline-block;
       padding: 12px 24px;
-      margin-top: 20px;
+      margin: 20px;
       background: #4CAF50;
       color: #fff;
       text-decoration: none;
       border-radius: 6px;
       font-weight: bold;
     }
-    .footer { margin-top: 30px; font-size: 12px; color: #aaa; text-align: center; }
+
+    .footer {
+      font-size: 12px;
+      color: #aaa;
+      text-align: center;
+    }
+
+    .box {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h1>Verify Your Email</h1>
     <p>Hi {{name}},</p>
-    <p>Thank you for signing up! Please confirm your email by clicking the button below or use the verification code:</p>
-    <a href="{{verifyLink}}" class="btn">Verify Email</a>
-    <p>If the button doesn't work, copy and paste this verification code.</p>
+    <p>Thank you for signing up! Please confirm your email by clicking the button below or use the verification code:
+    </p>
+    <div class="box">
+      <a href="{{verifyLink}}" class="btn">Verify Email</a>
+    </div>
+    <p>If the button doesn't work, copy and paste the verification code.</p>
     <div style="text-align: center; margin: 30px 0;">
       <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #4CAF50;">{{verificationCode}}</span>
     </div>
-    <p>This code will expire in 15 minutes for security reasons.</p>
-    <div class="footer">If you didn't request this, you can ignore this email.</div>
+    <p>Verification code will expire in 15 minutes for security reasons.</p>
+    <div style="margin-top: 40px">
+      <p class="footer">
+        If you didn't request this, you can ignore this email.
+      </p>
+      <p class="footer">This is an automated message, please do not reply to this email.</p>
+    </div>
   </div>
 </body>
 </html>
