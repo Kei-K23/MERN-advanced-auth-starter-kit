@@ -25,3 +25,8 @@ export const resetPasswordSchema = Joi.object({
   newPassword: Joi.string().min(6).max(18).required(),
   verificationCode: Joi.string().required(),
 });
+
+export const updateUserSchema = Joi.object({
+  name: Joi.string().optional(),
+  email: Joi.string().email().optional(),
+});

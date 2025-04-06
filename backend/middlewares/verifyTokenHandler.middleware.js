@@ -3,19 +3,20 @@ import { verifyAccessToken } from '../utils.js';
 
 export const verifyToken = (req, _res, next) => {
   try {
-    const accessToken = req?.cookies?.access_token;
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
-    if (!accessToken) {
+    if (!token) {
       throw new Unauthorized('Unauthorized - no access token provided');
     }
 
-    const decoded = verifyAccessToken(accessToken);
+    const decoded = verifyAccessToken(token);
 
     if (!decoded) {
       throw new Unauthorized('Unauthorized - invalid token');
     }
 
-    req.user.userId = decoded.userId;
+    req.user = { id: decoded.userId };
     next();
   } catch (error) {
     next(error);

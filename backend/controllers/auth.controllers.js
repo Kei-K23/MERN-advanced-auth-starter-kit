@@ -3,10 +3,10 @@ import {
   loginSchema,
   resetPasswordSchema,
   signUpSchema,
+  updateUserSchema,
   verifyEmailSchema,
 } from '../schemas/auth.schemas.js';
 import AuthService from '../services/auth.services.js';
-import { setCookie } from '../utils.js';
 
 export default class AuthController {
   static signUp = async (req, res, next) => {
@@ -15,7 +15,13 @@ export default class AuthController {
         req.body,
       );
 
-      const newUser = await AuthService.signUp(name, email, password);
+      const newUser = await AuthService.signUp(
+        name,
+        email,
+        password,
+        req.ip,
+        req.headers['user-agent'],
+      );
 
       res.status(201).json(newUser);
     } catch (error) {
@@ -29,7 +35,12 @@ export default class AuthController {
         req.body,
       );
 
-      await AuthService.verifyEmail(email, verificationCode);
+      await AuthService.verifyEmail(
+        email,
+        verificationCode,
+        req.ip,
+        req.headers['user-agent'],
+      );
 
       res.status(200).json({
         success: true,
@@ -44,15 +55,14 @@ export default class AuthController {
     try {
       const { email, password } = await loginSchema.validateAsync(req.body);
 
-      const token = await AuthService.login(email, password);
+      const token = await AuthService.login(
+        email,
+        password,
+        req.ip,
+        req.headers['user-agent'],
+      );
 
       // Set the access token cookie
-      setCookie(
-        res,
-        'access_token',
-        token,
-        process.env.ACCESS_TOKEN_EXPIRES_IN,
-      );
       res.status(200).json({
         success: true,
         message: 'Login successful',
@@ -65,7 +75,6 @@ export default class AuthController {
 
   static logout = async (_req, res, next) => {
     try {
-      res.clearCookie('access_token');
       res.status(200).json({
         success: true,
         message: 'Logout successful',
@@ -79,7 +88,11 @@ export default class AuthController {
     try {
       const { email } = await forgotPasswordSchema.validateAsync(req.body);
 
-      await AuthService.forgotPassword(email);
+      await AuthService.forgotPassword(
+        email,
+        req.ip,
+        req.headers['user-agent'],
+      );
 
       res.status(200).json({
         success: true,
@@ -95,12 +108,51 @@ export default class AuthController {
       const { email, verificationCode, newPassword } =
         await resetPasswordSchema.validateAsync(req.body);
 
-      await AuthService.resetPassword(email, verificationCode, newPassword);
+      await AuthService.resetPassword(
+        email,
+        verificationCode,
+        newPassword,
+        req.ip,
+        req.headers['user-agent'],
+      );
 
       res.status(200).json({
         success: true,
         message: 'Successfully reset your password',
       });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  static getMe = async (req, res, next) => {
+    try {
+      const { id } = req.user;
+      const user = await AuthService.getMe(id);
+
+      res.status(200).json(user);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  static updateMe = async (req, res, next) => {
+    try {
+      const { id } = req.user;
+      const { name, email } = await updateUserSchema.validateAsync(req.body);
+      const user = await AuthService.updateMe(id, name, email);
+
+      res.status(200).json(user);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  static deleteMe = async (req, res, next) => {
+    try {
+      const { id } = req.user;
+      const user = await AuthService.deleteMe(id);
+      res.status(200).json(user);
     } catch (error) {
       next(error);
     }

@@ -13,12 +13,3 @@ export const generateAccessToken = (userId) => {
 export const verifyAccessToken = (token) => {
   return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY);
 };
-
-export const setCookie = (res, key, val, expiresIn) => {
-  res.cookie(key, val, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: expiresIn,
-  });
-};
