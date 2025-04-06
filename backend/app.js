@@ -3,14 +3,15 @@ import { errorHandler } from './middlewares/errorHandler.middleware.js';
 import cookieParser from 'cookie-parser';
 import NotFoundError from './exceptions/NotFoundError.js';
 import router from './routes/index.js';
+import cors from 'cors';
 
 const app = express();
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 
 app.use(express.json());
 app.use(cookieParser());
-
-app.get('/health-check', (_req, res) => {
-  res.json({ message: 'hello world' });
+app.get('/api/v1/health-check', (_req, res) => {
+  res.json({ success: true });
 });
 
 // Register routes

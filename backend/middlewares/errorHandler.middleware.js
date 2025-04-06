@@ -6,7 +6,6 @@ import jwt from 'jsonwebtoken';
 export const errorHandler = (error, _req, res, _next) => {
   let statusCode = 500;
   let message = 'Internal server error';
-  console.log(error);
 
   // Handle App API Error
   if (error instanceof ApiError) {
