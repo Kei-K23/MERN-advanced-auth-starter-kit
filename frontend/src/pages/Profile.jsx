@@ -9,6 +9,7 @@ import {
   CardBody,
   Text,
   useDisclosure,
+  Field,
 } from '@chakra-ui/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
@@ -67,11 +68,9 @@ export default function Profile() {
 
   return (
     <Stack spacing={8} maxW="2xl" mx="auto">
-      <Card>
-        <CardHeader>
-          <Heading size="md">Profile Settings</Heading>
-        </CardHeader>
-        <CardBody>
+      <Card.Root>
+        <Card.Body>
+          <Card.Title>Profile Settings</Card.Title>
           <form onSubmit={handleSubmit}>
             <Stack spacing={4}>
               <Field.Root>
@@ -101,14 +100,12 @@ export default function Profile() {
               </Button>
             </Stack>
           </form>
-        </CardBody>
-      </Card>
+        </Card.Body>
+      </Card.Root>
 
-      <Card>
-        <CardHeader>
-          <Heading size="md">Danger Zone</Heading>
-        </CardHeader>
+      <Card.Root>
         <CardBody>
+          <Card.Title>Danger Zone</Card.Title>
           <Stack spacing={4}>
             <Text color="gray.600">
               Once you delete your account, there is no going back. Please be
@@ -119,7 +116,7 @@ export default function Profile() {
             </Button>
           </Stack>
         </CardBody>
-      </Card>
+      </Card.Root>
     </Stack>
   );
 }

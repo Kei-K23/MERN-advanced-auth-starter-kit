@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { auth } from '../lib/api';
 import { siteConfig } from '../config';
 import Cookies from 'js-cookie';
@@ -20,18 +20,14 @@ export function useAuth() {
     },
   });
 
-  const logout = useMutation({
-    mutationFn: auth.logout,
-    onSuccess: () => {
-      Cookies.remove(siteConfig.ACCESS_TOKEN_COOKIE_KEY);
-      localStorage.removeItem('token');
-      queryClient.setQueryData(['user'], null);
-    },
-  });
+  const logout = () => {
+    Cookies.remove(siteConfig.ACCESS_TOKEN_COOKIE_KEY);
+    queryClient.setQueryData(['user'], null);
+  };
 
   return {
     user,
     isLoading,
-    logout: logout.mutate,
+    logout,
   };
 }
