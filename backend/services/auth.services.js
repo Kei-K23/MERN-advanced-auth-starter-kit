@@ -2,9 +2,10 @@ import { sendEmail } from '../config/email.js';
 import { VERIFICATION_EMAIL_TEMPLATE } from '../config/emailTemplates.js';
 import BadRequestError from '../exceptions/BadRequestError.js';
 import NotFoundError from '../exceptions/NotFoundError.js';
+import Unauthorized from '../exceptions/Unauthorized.js';
 import Token from '../models/token.model.js';
 import User from '../models/user.model.js';
-import { generateRandomNumbers } from '../utils.js';
+import { generateAccessToken, generateRandomNumbers } from '../utils.js';
 
 export default class AuthService {
   static signUp = async (name, email, password) => {
@@ -70,5 +71,21 @@ export default class AuthService {
     await existingUser.save();
     // Delete the token for clean-up
     await tokenDoc.deleteOne();
+  };
+
+  static login = async (email, password) => {
+    const existingUser = await User.findOne({ email });
+
+    if (!existingUser.isVerified) {
+      throw new BadRequestError(
+        'User account is not verify yet. Please verify the account first',
+      );
+    }
+
+    if (!existingUser || !(await existingUser.comparePassword(password))) {
+      throw new Unauthorized('Invalid login credentials');
+    }
+
+    return generateAccessToken(existingUser.id);
   };
 }
