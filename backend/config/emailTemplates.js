@@ -189,8 +189,11 @@ export const WELCOME_TEMPLATE = `<!-- email-welcome.html -->
     <h1>Welcome, {{name}}! 🎉</h1>
     <p>We're excited to have you on board. Your account has been verified successfully.</p>
     <p>Feel free to explore and enjoy our services.</p>
-    <a href="{{dashboardLink}}" class="btn">Go to Dashboard</a>
-    <div class="footer">Thank you for joining us!</div>
+    <div class="footer">Thank you for joining us!
+    <br/>
+      <br/>
+      This is an automated message, please do not reply to this email.
+    </div>
   </div>
 </body>
 </html>

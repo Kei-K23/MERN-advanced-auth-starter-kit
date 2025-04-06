@@ -45,11 +45,28 @@ export default class AuthController {
       const token = await AuthService.login(email, password);
 
       // Set the access token cookie
-      setCookie(res, token, process.env.ACCESS_TOKEN_EXPIRES_IN);
+      setCookie(
+        res,
+        'access_token',
+        token,
+        process.env.ACCESS_TOKEN_EXPIRES_IN,
+      );
       res.status(200).json({
         success: true,
         message: 'Login successful',
         accessToken: token,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  static logout = async (_req, res, next) => {
+    try {
+      res.clearCookie('access_token');
+      res.status(200).json({
+        success: true,
+        message: 'Logout successful',
       });
     } catch (error) {
       next(error);

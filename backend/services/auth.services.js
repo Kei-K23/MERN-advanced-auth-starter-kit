@@ -1,5 +1,8 @@
 import { sendEmail } from '../config/email.js';
-import { VERIFICATION_EMAIL_TEMPLATE } from '../config/emailTemplates.js';
+import {
+  VERIFICATION_EMAIL_TEMPLATE,
+  WELCOME_TEMPLATE,
+} from '../config/emailTemplates.js';
 import BadRequestError from '../exceptions/BadRequestError.js';
 import NotFoundError from '../exceptions/NotFoundError.js';
 import Unauthorized from '../exceptions/Unauthorized.js';
@@ -71,6 +74,22 @@ export default class AuthService {
     await existingUser.save();
     // Delete the token for clean-up
     await tokenDoc.deleteOne();
+
+    // Send welcome email message
+    const emailTemplate = WELCOME_TEMPLATE.replace(
+      '{{name}}',
+      existingUser.name,
+    );
+    sendEmail(
+      'Welcome from the MERN Advanced Auth Starter Kit',
+      emailTemplate,
+      'Welcome Message',
+      [
+        {
+          email: existingUser.email,
+        },
+      ],
+    );
   };
 
   static login = async (email, password) => {
