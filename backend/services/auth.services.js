@@ -1,5 +1,7 @@
 import { sendEmail } from '../config/email.js';
 import {
+  PASSWORD_RESET_REQUEST_TEMPLATE,
+  PASSWORD_RESET_SUCCESS_TEMPLATE,
   VERIFICATION_EMAIL_TEMPLATE,
   WELCOME_TEMPLATE,
 } from '../config/emailTemplates.js';
@@ -106,5 +108,81 @@ export default class AuthService {
     }
 
     return generateAccessToken(existingUser.id);
+  };
+
+  static forgotPassword = async (email) => {
+    const existingUser = await User.findOne({ email, isVerified: true });
+
+    if (!existingUser) {
+      throw new NotFoundError('User not found');
+    }
+
+    // Handle email sending for account verification code
+    const token = generateRandomNumbers().toString();
+    await Token.create({
+      token,
+      userId: existingUser._id,
+      type: 'FORGOT_PASSWORD',
+      expireIn: Date.now() + 900000, // 15 minutes
+    });
+
+    const emailTemplate = PASSWORD_RESET_REQUEST_TEMPLATE.replace(
+      '{{verificationCode}}',
+      token,
+    ).replace('{{name}}', existingUser.name);
+
+    // Send email verification
+    sendEmail(
+      'Password Reset Request',
+      emailTemplate,
+      'Password Reset Request',
+      [
+        {
+          email: existingUser.email,
+        },
+      ],
+    );
+  };
+
+  static resetPassword = async (email, verificationCode, newPassword) => {
+    const existingUser = await User.findOne({ email, isVerified: true });
+
+    if (!existingUser) {
+      throw new NotFoundError('User not found');
+    }
+
+    // Get the token and check token is valid
+    const tokenDoc = await Token.findOne({
+      userId: existingUser._id,
+      token: verificationCode,
+      expireIn: {
+        $gt: Date.now(),
+      },
+    });
+
+    if (!tokenDoc) {
+      throw new BadRequestError('Token is expired or invalid');
+    }
+
+    existingUser.password = newPassword;
+    // Update user isVerified status
+    await existingUser.save();
+    // Delete the token for clean-up
+    await tokenDoc.deleteOne();
+
+    const emailTemplate = PASSWORD_RESET_SUCCESS_TEMPLATE.replace(
+      '{{name}}',
+      existingUser.name,
+    );
+    sendEmail(
+      'Password Reset Successful',
+      emailTemplate,
+      'Password Reset Successful',
+      [
+        {
+          email: existingUser.email,
+        },
+      ],
+    );
   };
 }

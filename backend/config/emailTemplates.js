@@ -1,6 +1,5 @@
 export const VERIFICATION_EMAIL_TEMPLATE = `
 <!-- email-verify.html -->
-<!-- email-verify.html -->
 <!DOCTYPE html>
 <html>
 
@@ -63,21 +62,16 @@ export const VERIFICATION_EMAIL_TEMPLATE = `
   <div class="container">
     <h1>Verify Your Email</h1>
     <p>Hi {{name}},</p>
-    <p>Thank you for signing up! Please confirm your email by clicking the button below or use the verification code:
+    <p>Thank you for signing up! Please confirm your email by copy and paste the verification code:
     </p>
-    <div class="box">
-      <a href="{{verifyLink}}" class="btn">Verify Email</a>
-    </div>
-    <p>If the button doesn't work, copy and paste the verification code.</p>
     <div style="text-align: center; margin: 30px 0;">
       <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #4CAF50;">{{verificationCode}}</span>
     </div>
     <p>Verification code will expire in 15 minutes for security reasons.</p>
-    <div style="margin-top: 40px">
-      <p class="footer">
+    <div class="footer">
         If you didn't request this, you can ignore this email.
-      </p>
-      <p class="footer">This is an automated message, please do not reply to this email.</p>
+      <br />
+      This is an automated message, please do not reply to this email.
     </div>
   </div>
 </body>
@@ -97,7 +91,7 @@ export const PASSWORD_RESET_SUCCESS_TEMPLATE = `
     <h1 style="color: white; margin: 0;">Password Reset Successful</h1>
   </div>
   <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-    <p>Hello,</p>
+    <p>Hello {{name}},</p>
     <p>We're writing to confirm that your password has been successfully reset.</p>
     <div style="text-align: center; margin: 30px 0;">
       <div style="background-color: #4CAF50; color: white; width: 50px; height: 50px; line-height: 50px; border-radius: 50%; display: inline-block; font-size: 30px;">
@@ -108,21 +102,21 @@ export const PASSWORD_RESET_SUCCESS_TEMPLATE = `
     <p>For security reasons, we recommend that you:</p>
     <ul>
       <li>Use a strong, unique password</li>
-      <li>Enable two-factor authentication if available</li>
       <li>Avoid using the same password across multiple sites</li>
     </ul>
     <p>Thank you for helping us keep your account secure.</p>
-    <p>Best regards,<br>Your App Team</p>
-  </div>
-  <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
-    <p>This is an automated message, please do not reply to this email.</p>
+    <p>Best regards,<br>MERN Advanced Auth Starter Kit</p>
+    <div class="footer">
+        If you didn't request this, you can ignore this email.
+      <br />
+      This is an automated message, please do not reply to this email.
+    </div>
   </div>
 </body>
 </html>
 `;
 
 export const PASSWORD_RESET_REQUEST_TEMPLATE = `
-<!-- email-reset-password.html -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -149,12 +143,17 @@ export const PASSWORD_RESET_REQUEST_TEMPLATE = `
   <div class="container">
     <h2>Password Reset Request</h2>
     <p>Hi {{name}},</p>
-    <p>We received a request to reset your password. Click the button below to proceed:</p>
-    <a href="{{resetLink}}" class="btn">Reset Password</a>
-    <p>If you didn’t request this, you can safely ignore it.</p>
-    <p>Or copy this link manually:</p>
-    <p><a href="{{resetLink}}">{{resetLink}}</a></p>
-    <div class="footer">Your security is important to us.</div>
+    <p>We received a request to reset your password. Copy and past verification code to reset your password.</p>
+  
+    <div style="text-align: center; margin: 30px 0;">
+      <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #4CAF50;">{{verificationCode}}</span>
+    </div>
+    <p>Verification code will expire in 15 minutes for security reasons.</p>
+    <div class="footer">
+        If you didn't request this, you can ignore this email.
+      <br />
+      This is an automated message, please do not reply to this email.
+    </div>
   </div>
 </body>
 </html>
@@ -186,12 +185,13 @@ export const WELCOME_TEMPLATE = `<!-- email-welcome.html -->
 </head>
 <body>
   <div class="container">
-    <h1>Welcome, {{name}}! 🎉</h1>
+  <div style="background: linear-gradient(to right, #4CAF50, #45a049); padding: 20px; text-align: center;">
+    <h1 style="color: white; margin: 0;">Welcome, {{name}}! 🎉</h1>
+  </div>
     <p>We're excited to have you on board. Your account has been verified successfully.</p>
     <p>Feel free to explore and enjoy our services.</p>
     <div class="footer">Thank you for joining us!
     <br/>
-      <br/>
       This is an automated message, please do not reply to this email.
     </div>
   </div>

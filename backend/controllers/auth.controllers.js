@@ -1,5 +1,7 @@
 import {
+  forgotPasswordSchema,
   loginSchema,
+  resetPasswordSchema,
   signUpSchema,
   verifyEmailSchema,
 } from '../schemas/auth.schemas.js';
@@ -67,6 +69,37 @@ export default class AuthController {
       res.status(200).json({
         success: true,
         message: 'Logout successful',
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  static forgotPassword = async (req, res, next) => {
+    try {
+      const { email } = await forgotPasswordSchema.validateAsync(req.body);
+
+      await AuthService.forgotPassword(email);
+
+      res.status(200).json({
+        success: true,
+        message: 'Successfully send forgot password request',
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  static resetPassword = async (req, res, next) => {
+    try {
+      const { email, verificationCode, newPassword } =
+        await resetPasswordSchema.validateAsync(req.body);
+
+      await AuthService.resetPassword(email, verificationCode, newPassword);
+
+      res.status(200).json({
+        success: true,
+        message: 'Successfully reset your password',
       });
     } catch (error) {
       next(error);
