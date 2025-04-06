@@ -14,6 +14,6 @@ export default class UserActivityService {
   static getActivitiesByUserId = async (userId) => {
     return await UserActivity.find({
       user: new mongoose.Types.ObjectId(userId),
-    });
+    }).lean();
   };
 }

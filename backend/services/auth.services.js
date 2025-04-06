@@ -236,7 +236,15 @@ export default class AuthService {
     if (!existingUser) {
       throw new NotFoundError('User not found');
     }
-    return existingUser;
+
+    const activities = await UserActivityService.getActivitiesByUserId(
+      existingUser._id,
+    );
+
+    // Delete the password field
+    delete existingUser.password;
+
+    return { ...existingUser, activities };
   };
 
   static updateMe = async (userId, name, email) => {
