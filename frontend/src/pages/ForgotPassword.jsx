@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link as RouterLink } from 'react-router';
+import { Link as RouterLink, useNavigate } from 'react-router';
 import {
   Box,
   Button,
@@ -16,12 +16,16 @@ import { toaster } from '../components/ui/toaster';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
-  const [isEmailSent, setIsEmailSent] = useState(false);
+  const navigate = useNavigate();
 
   const forgotPassword = useMutation({
     mutationFn: auth.forgotPassword,
     onSuccess: () => {
-      setIsEmailSent(true);
+      toaster.create({
+        title: 'Successfully send password reset code',
+        type: 'success',
+      });
+      navigate(`/reset-password?email=${email}`);
     },
     onError: (error) => {
       toaster.create({
@@ -35,29 +39,6 @@ export default function ForgotPassword() {
     e.preventDefault();
     forgotPassword.mutate(email);
   };
-
-  if (isEmailSent) {
-    return (
-      <Box maxW="md" mx="auto" mt={8}>
-        <Box bg="gray.900" p={8} rounded="xl" shadow="lg">
-          <Stack spacing={6}>
-            <Alert.Root status="success">
-              <Alert.Indicator />
-              <Alert.Title>
-                We've sent you an email with instructions to reset your
-                password.
-              </Alert.Title>
-            </Alert.Root>
-            <Text textAlign="center">
-              <Link as={RouterLink} to="/" color="blue.500">
-                Return to login
-              </Link>
-            </Text>
-          </Stack>
-        </Box>
-      </Box>
-    );
-  }
 
   return (
     <Box maxW="md" mx="auto" mt={8}>
@@ -91,7 +72,7 @@ export default function ForgotPassword() {
                 fontSize="md"
                 isLoading={forgotPassword.isPending}
               >
-                Send reset instructions
+                Submit
               </Button>
             </Stack>
           </form>

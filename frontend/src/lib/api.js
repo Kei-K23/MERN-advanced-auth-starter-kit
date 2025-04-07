@@ -32,8 +32,8 @@ export const auth = {
 
   forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
 
-  resetPassword: (token, password) =>
-    api.post('/auth/reset-password', { token, password }),
+  resetPassword: ({ email, verificationCode, newPassword }) =>
+    api.post('/auth/reset-password', { email, verificationCode, newPassword }),
 
   getProfile: () => api.get('/auth/me'),
 

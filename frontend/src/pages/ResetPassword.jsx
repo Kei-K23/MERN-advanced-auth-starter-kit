@@ -8,17 +8,21 @@ import {
   Text,
   Link,
   Heading,
+  Field,
+  IconButton,
 } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
 import { auth } from '../lib/api';
 import { toaster } from '../components/ui/toaster';
+import { LuEye, LuEyeOff } from 'react-icons/lu';
 
 export default function ResetPassword() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const token = searchParams.get('token');
+  const email = searchParams.get('email');
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
 
   const resetPassword = useMutation({
     mutationFn: auth.resetPassword,
@@ -39,39 +43,18 @@ export default function ResetPassword() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!token) {
+    if (!verificationCode) {
       toaster.create({
-        title: 'Invalid reset token',
+        title: 'Missing password reset code',
         type: 'error',
       });
-      return;
     }
-    resetPassword.mutate({ token, password });
+    resetPassword.mutate({ verificationCode, email, newPassword: password });
   };
-
-  if (!token) {
-    return (
-      <Box maxW="md" mx="auto" mt={8}>
-        <Box bg="white" p={8} rounded="xl" shadow="lg">
-          <Stack spacing={6} textAlign="center">
-            <Heading fontSize="2xl" color="red.500">
-              Invalid Reset Link
-            </Heading>
-            <Text color="gray.600">
-              This password reset link is invalid or has expired.
-            </Text>
-            <Link as={RouterLink} to="/forgot-password" color="blue.500">
-              Request a new password reset
-            </Link>
-          </Stack>
-        </Box>
-      </Box>
-    );
-  }
 
   return (
     <Box maxW="md" mx="auto" mt={8}>
-      <Box bg="white" p={8} rounded="xl" shadow="lg">
+      <Box bg="gray.900" p={8} rounded="xl" shadow="lg">
         <Stack spacing={6}>
           <Stack spacing={2} textAlign="center">
             <Heading fontSize="2xl">Reset your password</Heading>
@@ -80,20 +63,30 @@ export default function ResetPassword() {
 
           <form onSubmit={handleSubmit}>
             <Stack spacing={4}>
+              <Field.Root>
+                <Field.Label>Password Reset Code</Field.Label>
+                <Input
+                  value={verificationCode}
+                  onChange={(e) => setVerificationCode(e.target.value)}
+                  placeholder="Enter password reset code"
+                />
+              </Field.Root>
+
               <Field.Root
                 css={{
                   position: 'relative',
                 }}
               >
-                <Field.Label>Password</Field.Label>
+                <Field.Label>New Password</Field.Label>
                 <Input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
+                  placeholder="Enter your new password"
                   css={{
                     paddingRight: '10',
                   }}
+                  required
                 />
                 <IconButton
                   css={{
