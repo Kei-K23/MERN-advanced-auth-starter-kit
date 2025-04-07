@@ -1,13 +1,13 @@
-import { useEffect } from 'react';
 import { useNavigate, useSearchParams, Link as RouterLink } from 'react-router';
-import { Box, Stack, Heading, Text, Link, Spinner } from '@chakra-ui/react';
+import { Box, Stack, Text, Alert, PinInput } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
 import { auth } from '../lib/api';
+import { toaster } from '../components/ui/toaster';
 
 export default function VerifyEmail() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const token = searchParams.get('token');
+  const email = searchParams.get('email');
 
   const verifyEmail = useMutation({
     mutationFn: auth.verifyEmail,
@@ -16,64 +16,25 @@ export default function VerifyEmail() {
         navigate('/');
       }, 3000);
     },
+    onError: (error) => {
+      toaster.create({
+        title: error?.response?.data?.message || 'Email verification failed',
+        type: 'error',
+      });
+    },
   });
 
-  useEffect(() => {
-    if (token) {
-      verifyEmail.mutate(token);
-    }
-  }, [token]);
-
-  if (!token) {
+  if (verifyEmail.isSuccess) {
     return (
       <Box maxW="md" mx="auto" mt={8}>
-        <Box bg="white" p={8} rounded="xl" shadow="lg">
-          <Stack spacing={6} textAlign="center">
-            <Heading fontSize="2xl" color="red.500">
-              Invalid Verification Link
-            </Heading>
-            <Text color="gray.600">
-              This email verification link is invalid or has expired.
-            </Text>
-            <Link as={RouterLink} to="/" color="blue.500">
-              Return to login
-            </Link>
-          </Stack>
-        </Box>
-      </Box>
-    );
-  }
-
-  if (verifyEmail.isPending) {
-    return (
-      <Box maxW="md" mx="auto" mt={8}>
-        <Box bg="white" p={8} rounded="xl" shadow="lg">
-          <Stack spacing={6} align="center">
-            <Spinner size="xl" />
-            <Text>Verifying your email address...</Text>
-          </Stack>
-        </Box>
-      </Box>
-    );
-  }
-
-  if (verifyEmail.isError) {
-    return (
-      <Box maxW="md" mx="auto" mt={8}>
-        <Box bg="white" p={8} rounded="xl" shadow="lg">
-          <Stack spacing={6}>
-            <Alert.Root status="error">
-              <Alert.Indicator />
-              <Alert.Title>
-                Failed to verify your email address. The link may have expired.
-              </Alert.Title>
-            </Alert.Root>
-            <Text textAlign="center">
-              <Link as={RouterLink} to="/" color="blue.500">
-                Return to login
-              </Link>
-            </Text>
-          </Stack>
+        <Box bg="gray.800" p={8} rounded="xl" shadow="lg">
+          <Alert.Root status="success">
+            <Alert.Indicator />
+            <Alert.Title>
+              Your email has been verified successfully!
+            </Alert.Title>
+          </Alert.Root>
+          <Text textAlign="center">Redirecting to login page...</Text>
         </Box>
       </Box>
     );
@@ -81,12 +42,56 @@ export default function VerifyEmail() {
 
   return (
     <Box maxW="md" mx="auto" mt={8}>
-      <Box bg="white" p={8} rounded="xl" shadow="lg">
+      <Box bg={'gray.800'} p={8} rounded="xl" shadow="lg">
         <Stack spacing={6}>
-          <Alert status="success" rounded="md">
-            Your email has been verified successfully!
-          </Alert>
-          <Text textAlign="center">Redirecting to login page...</Text>
+          <PinInput.Root
+            onValueComplete={(e) => {
+              verifyEmail.mutate({
+                email,
+                verificationCode: e.valueAsString,
+              });
+            }}
+          >
+            <PinInput.HiddenInput />
+            <PinInput.Control>
+              <PinInput.Input
+                boxSize={'14'}
+                fontSize={'xl'}
+                bg={'gray.700'}
+                index={0}
+              />
+              <PinInput.Input
+                boxSize={'14'}
+                fontSize={'xl'}
+                bg={'gray.700'}
+                index={1}
+              />
+              <PinInput.Input
+                boxSize={'14'}
+                fontSize={'xl'}
+                bg={'gray.700'}
+                index={2}
+              />
+              <PinInput.Input
+                boxSize={'14'}
+                fontSize={'xl'}
+                bg={'gray.700'}
+                index={3}
+              />
+              <PinInput.Input
+                boxSize={'14'}
+                fontSize={'xl'}
+                bg={'gray.700'}
+                index={4}
+              />
+              <PinInput.Input
+                boxSize={'14'}
+                fontSize={'xl'}
+                bg={'gray.700'}
+                index={5}
+              />
+            </PinInput.Control>
+          </PinInput.Root>
         </Stack>
       </Box>
     </Box>

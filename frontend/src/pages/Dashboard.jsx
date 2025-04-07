@@ -5,10 +5,12 @@ import {
   Heading,
   Text,
   Stack,
-  useDisclosure,
   Field,
   Input,
   Button,
+  Dialog,
+  Portal,
+  CloseButton,
 } from '@chakra-ui/react';
 import { useAuth } from '../hooks/useAuth';
 import { toaster } from '../components/ui/toaster';
@@ -18,10 +20,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [open, setOpen] = useState(false);
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
 
@@ -51,6 +53,8 @@ export default function Dashboard() {
         title: 'Account deleted successfully',
         type: 'success',
       });
+      // Close the dialog
+      setOpen(false);
       navigate('/');
     },
     onError: (error) => {
@@ -130,11 +134,7 @@ export default function Dashboard() {
                   />
                 </Field.Root>
 
-                <Button
-                  type="submit"
-                  variant={'outline'}
-                  isLoading={updateProfile.isPending}
-                >
+                <Button type="submit" isLoading={updateProfile.isPending}>
                   Save changes
                 </Button>
               </Stack>
@@ -150,14 +150,62 @@ export default function Dashboard() {
                 Once you delete your account, there is no going back. Please be
                 certain.
               </Text>
-              <Button colorPalette="red" variant={'outline'} onClick={onOpen}>
+              <Button
+                colorPalette="red"
+                variant={'outline'}
+                onClick={() => setOpen(true)}
+              >
                 Delete Account
               </Button>
             </Stack>
           </Card.Body>
         </Card.Root>
-        <Button marginTop={3}>Logout</Button>
+        <Button
+          marginTop={3}
+          onClick={() => {
+            logout();
+            toaster.create({
+              title: 'Successfully logout',
+              type: 'success',
+            });
+            navigate('/');
+          }}
+        >
+          Logout
+        </Button>
       </Stack>
+      <Dialog.Root lazyMount open={open} onOpenChange={(e) => setOpen(e.open)}>
+        <Portal>
+          <Dialog.Backdrop />
+          <Dialog.Positioner>
+            <Dialog.Content>
+              <Dialog.Header>
+                <Dialog.Title>Are you sure?</Dialog.Title>
+              </Dialog.Header>
+              <Dialog.Body>
+                Once you delete your account, there is no going back. Please be
+                certain.
+              </Dialog.Body>
+              <Dialog.Footer>
+                <Dialog.ActionTrigger asChild>
+                  <Button variant="outline">Cancel</Button>
+                </Dialog.ActionTrigger>
+                <Button
+                  colorPalette={'red'}
+                  onClick={() => {
+                    deleteAccount.mutate();
+                  }}
+                >
+                  Delete
+                </Button>
+              </Dialog.Footer>
+              <Dialog.CloseTrigger asChild>
+                <CloseButton size="sm" />
+              </Dialog.CloseTrigger>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
     </>
   );
 }

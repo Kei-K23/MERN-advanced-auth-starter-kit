@@ -8,7 +8,6 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import VerifyEmail from './pages/VerifyEmail';
-import Profile from './pages/Profile';
 import Dashboard from './pages/Dashboard';
 
 function App() {
@@ -36,7 +35,6 @@ function App() {
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="profile" element={<Profile />} />
           </Route>
         </Route>
       </Routes>

@@ -20,14 +20,15 @@ api.interceptors.request.use((config) => {
 export const auth = {
   login: (data) => api.post('/auth/login', data),
 
-  register: (name, email, password) =>
+  register: ({ name, email, password }) =>
     api.post('/auth/sign-up', {
       email,
       name,
       password,
     }),
 
-  verifyEmail: (token) => api.post('/auth/verify-email', { token }),
+  verifyEmail: ({ email, verificationCode }) =>
+    api.post('/auth/verify-email', { email, verificationCode }),
 
   forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
 

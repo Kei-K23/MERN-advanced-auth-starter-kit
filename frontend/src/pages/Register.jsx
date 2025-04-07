@@ -9,10 +9,12 @@ import {
   Link,
   Heading,
   Field,
+  IconButton,
 } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
 import { auth } from '../lib/api';
 import { toaster } from '../components/ui/toaster';
+import { LuEye, LuEyeOff } from 'react-icons/lu';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -23,12 +25,12 @@ export default function Register() {
 
   const register = useMutation({
     mutationFn: auth.register,
-    onSuccess: () => {
+    onSuccess: ({ data }) => {
       toaster.create({
         title: 'Registration successful',
         type: 'success',
       });
-      navigate('/');
+      navigate(`/verify-email?email=${data.email}`);
     },
     onError: (error) => {
       toaster.create({

@@ -39,7 +39,10 @@ export default function Login() {
         title: response.data.message,
         type: 'success',
       });
-      navigate('/dashboard');
+
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1000);
     },
     onError: (error) => {
       toaster.create({
