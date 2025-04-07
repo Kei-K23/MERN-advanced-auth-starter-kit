@@ -114,14 +114,14 @@ export default class AuthService {
   static login = async (email, password, ip, userAgent) => {
     const existingUser = await User.findOne({ email });
 
+    if (!existingUser || !(await existingUser.comparePassword(password))) {
+      throw new Unauthorized('Invalid login credentials');
+    }
+
     if (!existingUser.isVerified) {
       throw new BadRequestError(
         'User account is not verify yet. Please verify the account first',
       );
-    }
-
-    if (!existingUser || !(await existingUser.comparePassword(password))) {
-      throw new Unauthorized('Invalid login credentials');
     }
 
     await UserActivityService.create(

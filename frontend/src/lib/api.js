@@ -37,7 +37,7 @@ export const auth = {
 
   getProfile: () => api.get('/auth/me'),
 
-  updateProfile: (name, email) => api.patch('/auth/me', { name, email }),
+  updateProfile: ({ name, email }) => api.patch('/auth/me', { name, email }),
 
   deleteAccount: () => api.delete('/auth/me'),
 
